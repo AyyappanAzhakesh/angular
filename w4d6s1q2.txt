@@ -1,0 +1,79 @@
+// app.module.ts
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms'; // 👈 Required for template forms
+
+import { AppComponent } from './app.component';
+import { EventformComponent } from './eventform/eventform.component';
+
+@NgModule({
+  declarations: [AppComponent, EventformComponent],
+  imports: [BrowserModule, FormsModule], // 👈 Add FormsModule here
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule {}
+
+
+
+// eventform.component.ts
+import { Component } from '@angular/core';
+import { NgForm } from '@angular/forms'; // 👈 Allows Angular to understand form info
+
+@Component({
+  selector: 'app-eventform',
+  templateUrl: './eventform.component.html',
+  styleUrls: ['./eventform.component.css']
+})
+export class EventformComponent {
+
+  // 🌟 This method is triggered when the form is submitted
+  onSubmit(form: NgForm) {
+    const data = form.value;
+
+    // 📢 Show the submitted information
+    alert(`Registration Details:
+    Name: ${data.name}
+    Email: ${data.email}
+    Phone: ${data.phone}
+    Event: ${data.event}
+    Dietary Preferences: ${data.diet}`);
+
+    // 🔄 Reset the form after submission
+    form.reset();
+  }
+}
+
+
+////htmml
+<h2>Event Registration Form</h2>
+
+<form #registrationForm="ngForm" (ngSubmit)="onSubmit(registrationForm)">
+
+  <label for="name">Name:</label>
+  <input type="text" id="name" name="name" ngModel /><br /><br />
+
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email" ngModel /><br /><br />
+
+  <label for="phone">Phone Number:</label>
+  <input type="text" id="phone" name="phone" ngModel /><br /><br />
+
+  <label for="event">Select Event:</label>
+  <select id="event" name="event" ngModel>
+    <option value="" disabled selected>Select an event</option>
+    <option value="Workshop">Workshop</option>
+    <option value="Seminar">Seminar</option>
+    <option value="Conference">Conference</option>
+  </select><br /><br />
+
+  <label for="diet">Dietary Preferences:</label>
+  <textarea id="diet" name="diet" ngModel></textarea><br /><br />
+
+  <button type="submit">Register</button>
+
+</form>
+
+
+
+
