@@ -1,0 +1,123 @@
+<h2>User Registration</h2>
+
+<form #registrationForm="ngForm" (ngSubmit)="onSubmit(registrationForm)">
+
+    <div class="form-group">
+        <label for="firstName">Enter the First Name:</label>
+        <input type="text" id="firstName" name="firstName" minlength="6" [(ngModel)]="user.firstName" required>
+
+        <div class="error-message">
+            
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="lastName">Enter the Last Name:</label>
+        <input type="text" id="lastName" name="lastName" minlength="6" [(ngModel)]="user.lastName" required>
+
+        <div class="error-message">
+            <p></p>
+            <p></p>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="mobileNumber">Enter the Mobile Number:</label>
+        <input type="text" id="mobileNumber" name="mobileNumber" [(ngModel)]="user.mobileNumber" required>
+        <div class="error-message">
+            <p></p>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="email">Enter the Email:</label>
+        <input type="email" id="email" name="email" [(ngModel)]="user.email" required>
+        <div class="error-message">
+            <p></p>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="password">Enter the Password:</label>
+        <input type="password" id="password" name="password" [(ngModel)]="user.password" required>
+        <div class="error-message">
+            <p></p>
+            <p></p>
+            <p></p>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="confirmPassword">Confirm Password:</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" [(ngModel)]="user.confirmPassword" required>
+        <div class="error-message">
+            <p></p>
+            
+        </div>
+    </div>
+ 
+
+    <button type="submit" [disabled]="!registrationForm.valid">Submit</button>
+    <button (click)="resetForm(registrationForm)">Reset</button>
+</form>
+
+<div class="success-message" *ngIf="isFormSubmitted">
+    <p>Form submitted successfully!</p>
+</div>
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+interface User{
+  firstName:string,
+  lastName:string,
+  mobileNumber:string,
+  email:string,
+  password:string,
+  confirmPassword:string
+
+}
+
+@Component({
+  selector: 'app-registration',
+  templateUrl: './registration.component.html',
+  styleUrls: ['./registration.component.css']
+})
+export class RegistrationComponent implements OnInit {
+  registrationForm:NgForm
+  isFormSubmitted:boolean=false
+  formData:any
+
+  user:User={
+    firstName: '',
+    lastName: '',
+    mobileNumber: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  }
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+  onSubmit(form:NgForm):void{
+    if(form.valid){
+      this.isFormSubmitted=true
+      this.formData={...form.value}
+    }else{
+      return;
+    }
+
+  }
+
+  resetForm(form:NgForm):void{
+    form.reset
+    this.isFormSubmitted=false
+  }
+
+}
