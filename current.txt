@@ -1,77 +1,32 @@
-// const { stdin, stdout } = require('process');
-// const readline = require('readline');
-// const rl = readline.Interface({
-//     input: stdin,
-//     output: stdout,
-//     prompt: 'notes>'
-// })
-// rl.prompt();
+class LibrarayManager{
+    books;
 
-class NoteTaking {
-    notes;
-    constructor() {
-        this.notes = [];
+    constructor(){
+        this.books = [];
     }
-    addNote(title, content) {
-        const note = {
-            id: this.notes.length + 1,
-            title: title,
-            content: content
-        };
-        this.notes.push(note);
-        console.log(`Note added: ${note}`);
-        return note;
-    }
-    updateNote(id, update) {
-        const product = this.notes.find(p => p.id === id);
-        if (product) {
-            Object.assign(product, update);
-            console.log(`Note updated: ${this.notes[id]}`);
-            return product;
-        } else {
-            console.log(`Note not found for update: ${id}`);
-            return;
+    addBook(title,author){
+        const book = this.books.find(b=>b.title === title);
+        if(book){
+            console.log( `Book already exists: ${title}`);
+            return { status: 'error'};
         }
+        this.books.push({title,author});
+        console.log(`Book added: ${title} ${author}`);
+        return {status:'success'};
     }
-    deleteNote(id) {
-        const index = this.notes.findIndex(p => p.id === id);
-        if (index !== -1) {
-            this.notes.splice(index, 1);
-            console.log(`Note deleted: ${this.notes[index]}`);
-            return true;
-        } else if (index === -1) {
-            console.log(`Note not found for deletion: ${id}`);
-            return false;
+    listBooks(){
+        console.log('Listing all books');
+        return this.books;
+    }
+    removeBook(title){
+        const index = this.books.findIndex(b=>b.title === title);
+        if(index === -1) {
+            console.log(`Book not found: ${title}`);
+            return { status:'error'};
         }
-    }
-    listNotes() {
-        console.log(this.notes);
-        console.log(`Listing notes:`);
-        return this.notes;
+        this.books.splice(index,1);
+        console.log(`Book removed: ${title}`);
+        return { status:'success'};
     }
 }
-
-// const obj = new NoteTaking();
-// obj.addNote();
-// obj.updateNote();
-// obj.listNotes();
-// obj.deleteNote();
-
-// rl.on('line', (data) => {
-//     const tokens = data.trim().split(' ').filter(token => token);
-//     switch (tokens[0]) {
-//         case "add":
-//             obj.addNote(parseInt(tokens[1]), tokens[2], tokens[3]);
-//             break;
-//         case "update":
-//             obj.updateNote(parseInt(tokens[1]), tokens[2], tokens[3]);
-//             break;
-//         case "delete":
-//             obj.deleteNote(parseInt(tokens[1]));
-//             break;
-//         default:
-//             console.log('Invalid expression');
-//     }
-// })
-
-module.exports = new NoteTaking();
+module.exports = LibrarayManager;
