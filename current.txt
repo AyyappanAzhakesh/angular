@@ -1,0 +1,46 @@
+const readline = require('readline');
+const rl = readline.Interface({
+    input: process.stdin,
+    output: process.stdout,
+    prompt: 'calc>'
+})
+console.log('Simple Command Line Calculator');
+console.log('Type an arithmetic expression (e.g., 2 + 2) or type "exit" to quit.');
+rl.prompt();
+
+function calculateResult(operand1, operator, operand2) {
+    switch (operator) {
+        case '+':
+            return operand1 + operand2;
+        case '-':
+            return operand1 - operand2;
+        case '*':
+            return operand1 * operand2;
+        case '/':
+            if (operand2 === 0) {
+                console.log('Not divisible by zero');
+                rl.close();
+            }
+            return operand1 / operand2;
+        default:
+            console.log('Invalid expression');;
+    }
+}
+
+rl.on('line', (data) => {
+    if (data.trim() === 'exit') {
+        rl.close();
+    }
+    const tokens = data.trim().split(' ').filter(token => token);
+    const operand1 = parseInt(tokens[0]);
+    const operator = tokens[1];
+    const operand2 = parseInt(tokens[2]);
+    const result = calculateResult(operand1, operator, operand2)
+    console.log(`Result: ${result}`);
+    rl.prompt();
+})
+
+rl.on('close', () => {
+    console.log('Calculator terminated');
+    process.exit(0);
+})
