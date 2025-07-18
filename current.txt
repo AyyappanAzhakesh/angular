@@ -1,54 +1,77 @@
-const { EventEmitter, errorMonitor } = require('events');
+// const { stdin, stdout } = require('process');
+// const readline = require('readline');
+// const rl = readline.Interface({
+//     input: stdin,
+//     output: stdout,
+//     prompt: 'notes>'
+// })
+// rl.prompt();
 
-class BankingSystem extends EventEmitter {
-    accounts;
+class NoteTaking {
+    notes;
     constructor() {
-        super();
-        this.accounts = {}
+        this.notes = [];
     }
-
-    createAccount(accountNumber) {
-        if (this.accounts[accountNumber]) {
-            throw new Error('Account already exists.')
-        }
-        this.accounts[accountNumber] = { balance: 0 };
-        this.emit('accountCreated', `Account ${accountNumber} created.`);
-        return 'Account created successfully.'
+    addNote(title, content) {
+        const note = {
+            id: this.notes.length + 1,
+            title: title,
+            content: content
+        };
+        this.notes.push(note);
+        console.log(`Note added: ${note}`);
+        return note;
     }
-
-    deposit(accountNumber, amount) {
-        this.#_validateAccount(accountNumber);
-        if (amount <= 0) {
-            throw new Error('Deposit amount must be positive.');
+    updateNote(id, update) {
+        const product = this.notes.find(p => p.id === id);
+        if (product) {
+            Object.assign(product, update);
+            console.log(`Note updated: ${this.notes[id]}`);
+            return product;
+        } else {
+            console.log(`Note not found for update: ${id}`);
+            return;
         }
-        this.accounts[accountNumber].balance += amount;
-        this.emit('moneyDeposited', `Deposited ${amount} into account ${accountNumber}`);
-        return `Deposited ${amount} successfully.`
     }
-
-    withdraw(accountNumber, amount) {
-        this.#_validateAccount(accountNumber);
-        if (amount <= 0) {
-            throw new Error('Withdrawal amount must be positive.');
+    deleteNote(id) {
+        const index = this.notes.findIndex(p => p.id === id);
+        if (index !== -1) {
+            this.notes.splice(index, 1);
+            console.log(`Note deleted: ${this.notes[index]}`);
+            return true;
+        } else if (index === -1) {
+            console.log(`Note not found for deletion: ${id}`);
+            return false;
         }
-        if (this.accounts[accountNumber].balance < amount) {
-            throw new Error('Insufficient funds.')
-        }
-        this.accounts[accountNumber].balance -= amount;
-        this.emit('moneyWithdrawn', `Withdrew ${amount} from account ${accountNumber}`);
-        return `Withdrew ${amount} successfully.`
     }
-
-    getBalance(accountNumber) {
-        this.#_validateAccount(accountNumber);
-        return `Balance: ${this.accounts[accountNumber].balance}`;
-    }
-
-    #_validateAccount(accountNumber) {
-        if (!this.accounts[accountNumber]) {
-            throw new Error('Account does not exist.')
-        }
+    listNotes() {
+        console.log(this.notes);
+        console.log(`Listing notes:`);
+        return this.notes;
     }
 }
 
-module.exports = BankingSystem;
+// const obj = new NoteTaking();
+// obj.addNote();
+// obj.updateNote();
+// obj.listNotes();
+// obj.deleteNote();
+
+// rl.on('line', (data) => {
+//     const tokens = data.trim().split(' ').filter(token => token);
+//     switch (tokens[0]) {
+//         case "add":
+//             obj.addNote(parseInt(tokens[1]), tokens[2], tokens[3]);
+//             break;
+//         case "update":
+//             obj.updateNote(parseInt(tokens[1]), tokens[2], tokens[3]);
+//             break;
+//         case "delete":
+//             obj.deleteNote(parseInt(tokens[1]));
+//             break;
+//         default:
+//             console.log('Invalid expression');
+//     }
+// })
+
+module.exports = new NoteTaking();
