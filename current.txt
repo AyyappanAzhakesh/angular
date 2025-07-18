@@ -1,46 +1,54 @@
-const readline = require('readline');
-const rl = readline.Interface({
-    input: process.stdin,
-    output: process.stdout,
-    prompt: 'calc>'
-})
-console.log('Simple Command Line Calculator');
-console.log('Type an arithmetic expression (e.g., 2 + 2) or type "exit" to quit.');
-rl.prompt();
+const { EventEmitter, errorMonitor } = require('events');
 
-function calculateResult(operand1, operator, operand2) {
-    switch (operator) {
-        case '+':
-            return operand1 + operand2;
-        case '-':
-            return operand1 - operand2;
-        case '*':
-            return operand1 * operand2;
-        case '/':
-            if (operand2 === 0) {
-                console.log('Not divisible by zero');
-                rl.close();
-            }
-            return operand1 / operand2;
-        default:
-            console.log('Invalid expression');;
+class BankingSystem extends EventEmitter {
+    accounts;
+    constructor() {
+        super();
+        this.accounts = {}
+    }
+
+    createAccount(accountNumber) {
+        if (this.accounts[accountNumber]) {
+            throw new Error('Account already exists.')
+        }
+        this.accounts[accountNumber] = { balance: 0 };
+        this.emit('accountCreated', `Account ${accountNumber} created.`);
+        return 'Account created successfully.'
+    }
+
+    deposit(accountNumber, amount) {
+        this.#_validateAccount(accountNumber);
+        if (amount <= 0) {
+            throw new Error('Deposit amount must be positive.');
+        }
+        this.accounts[accountNumber].balance += amount;
+        this.emit('moneyDeposited', `Deposited ${amount} into account ${accountNumber}`);
+        return `Deposited ${amount} successfully.`
+    }
+
+    withdraw(accountNumber, amount) {
+        this.#_validateAccount(accountNumber);
+        if (amount <= 0) {
+            throw new Error('Withdrawal amount must be positive.');
+        }
+        if (this.accounts[accountNumber].balance < amount) {
+            throw new Error('Insufficient funds.')
+        }
+        this.accounts[accountNumber].balance -= amount;
+        this.emit('moneyWithdrawn', `Withdrew ${amount} from account ${accountNumber}`);
+        return `Withdrew ${amount} successfully.`
+    }
+
+    getBalance(accountNumber) {
+        this.#_validateAccount(accountNumber);
+        return `Balance: ${this.accounts[accountNumber].balance}`;
+    }
+
+    #_validateAccount(accountNumber) {
+        if (!this.accounts[accountNumber]) {
+            throw new Error('Account does not exist.')
+        }
     }
 }
 
-rl.on('line', (data) => {
-    if (data.trim() === 'exit') {
-        rl.close();
-    }
-    const tokens = data.trim().split(' ').filter(token => token);
-    const operand1 = parseInt(tokens[0]);
-    const operator = tokens[1];
-    const operand2 = parseInt(tokens[2]);
-    const result = calculateResult(operand1, operator, operand2)
-    console.log(`Result: ${result}`);
-    rl.prompt();
-})
-
-rl.on('close', () => {
-    console.log('Calculator terminated');
-    process.exit(0);
-})
+module.exports = BankingSystem;
