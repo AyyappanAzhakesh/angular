@@ -1,165 +1,27 @@
-const fs = require('fs');
-
-const jsonString = fs.readFileSync('data.json', 'utf-8');
-
-const requiredKeys = ['name', 'age', 'email'];
-
-const keyTypes = {
-
-    name: 'string',
-
-    age: 'number',
-
-    email: 'string'
-
-};
-
-function syntaxCheck(jsonString, callback) {
-
-    try {
-
-        JSON.parse(jsonString);
-
-        console.log('Syntax Check Passed');
-
-        callback(null, true);
-
-    } catch (error) {
-
-        console.log('Syntax Check Failed');
-
-        callback('Invalid JSON syntax', false);
-
-        return;
-
+class ShoppingList {
+    constructor() {
+        this.groceries = [];
+        this.totalPrice = 0;
     }
-
+    addItem(itemName, price) {
+        this.groceries.push({ itemName, price });
+    }
+    calculateTotalPrice() {
+        let result = this.groceries.reduce((item, price) => item + price.price, 0);
+        this.totalPrice = result;
+    }
+    removeItem(itemName) {
+        this.groceries = this.groceries.filter(p => p.itemName !== itemName);
+    }
+    clearList() {
+        this.groceries = [];
+        this.totalPrice = 0;
+    }
+    getItems() {
+        return this.groceries;
+    }
+    getTotalPrice() {
+        return this.totalPrice;
+    }
 }
-
-function structureCheck(jsonString, requiredKeys, callback) {
-
-    try {
-
-        const data = JSON.parse(jsonString)
-
-        const misskingKeys = requiredKeys.filter(key => !(key in data));
-
-        if (misskingKeys.length === 0) {
-
-            console.log('Structure Check Passed');
-
-            callback(null, true);
-
-        } else {
-
-            console.log('Structure Check Failed');
-
-            callback(`Missing keys: ${misskingKeys.join(', ')}`, false);
-
-        }
-
-    } catch (error) {
-
-        callback('Invalid JSON syntax', false);
-
-    }
-
-}
-
-function typeCheck(jsonString, keyTypes, callback) {
-
-    try {
-
-        const data = JSON.parse(jsonString);
-
-        const errors = Object.entries(keyTypes).filter(([key, type]) => typeof data[key] !== type);
-
-        if (errors.length === 0) {
-
-            console.log('Type Check Passed');
-
-            callback(null, true);
-
-        } else {
-
-            console.log('Type Check Failed');
-
-            callback((`Type errors: ${errors}`, `Key 'age' should be of type number`), false);
-
-        }
-
-    } catch (error) {
-
-        callback('Invalid JSON syntax', false);
-
-    }
-
-}
-
-function validateJSON(jsonString, requiredKeys, keyTypes, callback) {
-
-    const checks = [
-
-        (cb) => syntaxCheck(jsonString, cb),
-
-        (cb) => structureCheck(jsonString, requiredKeys, cb),
-
-        (cb) => typeCheck(jsonString, keyTypes, cb)
-
-    ];
-
-    const results = [];
-
-    const errorMessages = [];
-
-    if (jsonString['age'] === null) {
-
-        errorMessages.push("Key 'age' should be of type number");
-
-    }
-
-    function runCheck(index) {
-
-        if (index === checks.length) {
-
-            isValid = results.every(result => result === true);
-
-            callback(errorMessages, isValid);
-
-            return;
-
-        }
-
-        checks[index]((error, result) => {
-
-            if (error) errorMessages.push(error);
-
-            results.push(result);
-
-            runCheck(index + 1);
-
-        })
-
-    }
-
-    runCheck(0);
-
-}
-
-const jsonString1 = JSON.stringify({ name: 'John Doe', age: 30, email: 'john.doe@example.com' });
-
-validateJSON(jsonString1, requiredKeys, keyTypes, (errors, isValid) => {
-
-    if (errors) {
-
-        console.log(errors)
-
-    } else {
-
-        console.log(isValid)
-
-    }
-
-});
-
-module.exports = { validateJSON };
+module.exports = ShoppingList;
