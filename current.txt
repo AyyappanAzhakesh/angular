@@ -1,40 +1,35 @@
 const EventEmitter = require('events');
 
-class InventoryManager extends EventEmitter {
+class OrderProcessor extends EventEmitter {
   constructor() {
     super();
-    this.inventory = {};
+    this.orders = [];
   }
 
-  addItem(name, quantity) {
-    if (this.inventory[name]) {
-      this.inventory[name] += quantity;
-    } else {
-      this.inventory[name] = quantity;
-      this.emit('itemAdded', name, quantity);
-    }
-  }
-
-  removeItem(name, quantity) {
-    if (!this.inventory[name]) {
-      return;
-    }
-
-    if (this.inventory[name] < quantity) {
-      return; // Not enough stock; silently ignore as per test
-    }
-
-    this.inventory[name] -= quantity;
-    this.emit('itemRemoved', name, quantity);
-
-    if (this.inventory[name] === 0) {
-      this.emit('itemOutOfStock', name);
+  placeOrder(orderId) {
+    const exists = this.orders.some(order => order.id === orderId);
+    if (!exists) {
+      const order = { id: orderId, status: 'placed' };
+      this.orders.push(order);
+      this.emit('orderPlaced', orderId);
     }
   }
 
-  getInventory() {
-    return { ...this.inventory }; // Avoid exposing internal state
+  shipOrder(orderId) {
+    const order = this.orders.find(order => order.id === orderId);
+    if (order && order.status === 'placed') {
+      order.status = 'shipped';
+      this.emit('orderShipped', orderId);
+    }
+  }
+
+  deliverOrder(orderId) {
+    const order = this.orders.find(order => order.id === orderId);
+    if (order && order.status === 'shipped') {
+      order.status = 'delivered';
+      this.emit('orderDelivered', orderId);
+    }
   }
 }
 
-module.exports = InventoryManager;
+module.exports = OrderProcessor;
