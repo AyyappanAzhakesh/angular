@@ -1,29 +1,40 @@
-class ContactManager {
+const EventEmitter = require('events');
+
+class InventoryManager extends EventEmitter {
   constructor() {
-    this.contacts = [];
+    super();
+    this.inventory = {};
   }
 
-  addContact(name, phone) {
-    const exists = this.contacts.some(contact => contact.name === name);
-    if (exists) {
-      return { status: 'error', message: 'Contact already exists' };
+  addItem(name, quantity) {
+    if (this.inventory[name]) {
+      this.inventory[name] += quantity;
+    } else {
+      this.inventory[name] = quantity;
+      this.emit('itemAdded', name, quantity);
     }
-    this.contacts.push({ name, phone });
-    return { status: 'success', message: 'Contact added successfully' };
   }
 
-  removeContact(name) {
-    const index = this.contacts.findIndex(contact => contact.name === name);
-    if (index === -1) {
-      return { status: 'error', message: 'Contact not found' };
+  removeItem(name, quantity) {
+    if (!this.inventory[name]) {
+      return;
     }
-    this.contacts.splice(index, 1);
-    return { status: 'success', message: 'Contact removed successfully' };
+
+    if (this.inventory[name] < quantity) {
+      return; // Not enough stock; silently ignore as per test
+    }
+
+    this.inventory[name] -= quantity;
+    this.emit('itemRemoved', name, quantity);
+
+    if (this.inventory[name] === 0) {
+      this.emit('itemOutOfStock', name);
+    }
   }
 
-  listContacts() {
-    return this.contacts;
+  getInventory() {
+    return { ...this.inventory }; // Avoid exposing internal state
   }
 }
 
-module.exports = ContactManager;
+module.exports = InventoryManager;
