@@ -1,27 +1,29 @@
-class ShoppingList {
-    constructor() {
-        this.groceries = [];
-        this.totalPrice = 0;
+class ContactManager {
+  constructor() {
+    this.contacts = [];
+  }
+
+  addContact(name, phone) {
+    const exists = this.contacts.some(contact => contact.name === name);
+    if (exists) {
+      return { status: 'error', message: 'Contact already exists' };
     }
-    addItem(itemName, price) {
-        this.groceries.push({ itemName, price });
+    this.contacts.push({ name, phone });
+    return { status: 'success', message: 'Contact added successfully' };
+  }
+
+  removeContact(name) {
+    const index = this.contacts.findIndex(contact => contact.name === name);
+    if (index === -1) {
+      return { status: 'error', message: 'Contact not found' };
     }
-    calculateTotalPrice() {
-        let result = this.groceries.reduce((item, price) => item + price.price, 0);
-        this.totalPrice = result;
-    }
-    removeItem(itemName) {
-        this.groceries = this.groceries.filter(p => p.itemName !== itemName);
-    }
-    clearList() {
-        this.groceries = [];
-        this.totalPrice = 0;
-    }
-    getItems() {
-        return this.groceries;
-    }
-    getTotalPrice() {
-        return this.totalPrice;
-    }
+    this.contacts.splice(index, 1);
+    return { status: 'success', message: 'Contact removed successfully' };
+  }
+
+  listContacts() {
+    return this.contacts;
+  }
 }
-module.exports = ShoppingList;
+
+module.exports = ContactManager;
