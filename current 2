@@ -1,0 +1,39 @@
+const fs = require('fs');
+const path = require('path');
+const util = require('util');
+
+const readFileAsync = util.promisify(fs.readFile);
+const writeFileAsync = util.promisify(fs.writeFile);
+
+const expensesFilePath = path.join(__dirname, 'data', 'expenses.json');
+const resultsFilePath = path.join(__dirname, 'data', 'results.json');
+
+async function calculateSplitExpenses() {
+    const rawData = await readFileAsync(expensesFilePath, 'utf8');
+    const expenses = JSON.parse(rawData);
+
+    if (!Array.isArray(expenses) || expenses.length === 0) return [];
+
+    const totalPaid = expenses.reduce((sum, entry) => sum + entry.amount, 0);
+    const numberOfPeople = expenses.length;
+    const average = parseFloat((totalPaid / numberOfPeople).toFixed(2)); // Rounded to 2 decimal places
+
+    const result = expenses.map(({ name, amount }) => {
+        const balance = parseFloat((amount - average).toFixed(2));
+        return {
+            name,
+            amountPaid: amount,
+            amountOwed: average,
+            balance
+        };
+    });
+
+    await saveResults(result);
+    return result;
+}
+
+async function saveResults(data) {
+    await writeFileAsync(resultsFilePath, JSON.stringify(data, null, 2), 'utf8');
+}
+
+module.exports = { calculateSplitExpenses, saveResults };
