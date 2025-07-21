@@ -1,49 +1,26 @@
-// index.js
-
-const fs = require('fs');
-const path = require('path');
-
-class FileService {
-    constructor(uploadDir) {
-        this.uploadDir = uploadDir;
-        if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir, { recursive: true });
-        }
-    }
-
-    uploadFile(fileName, fileContent) {
-        const filePath = path.join(this.uploadDir, fileName);
-        fs.writeFileSync(filePath, fileContent);
-    }
-
-    downloadFile(fileName) {
-        const filePath = path.join(this.uploadDir, fileName);
-        if (!fs.existsSync(filePath)) {
-            throw new Error('File not found');
-        }
-        return fs.readFileSync(filePath);
-    }
-
-    streamFileContent(fileName, writableStream) {
-        const filePath = path.join(this.uploadDir, fileName);
-        if (!fs.existsSync(filePath)) {
-            throw new Error('File not found');
-        }
-        const readableStream = fs.createReadStream(filePath);
-        readableStream.pipe(writableStream);
-    }
-
-    deleteFile(fileName) {
-        const filePath = path.join(this.uploadDir, fileName);
-        if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
-        }
-        // No error if file doesn't exist, as per your test case
-    }
-
-    listFiles() {
-        return fs.readdirSync(this.uploadDir);
+class Product {
+    constructor(name, price) {
+        this.name = name;
+        this.price = price;
     }
 }
 
-module.exports = FileService;
+class ShoppingCart {
+    constructor() {
+        this.items = [];
+    }
+
+    addItem(product) {
+        this.items.push(product);
+    }
+
+    calculateTotalPrice() {
+        return this.items.reduce((total, item) => total + item.price, 0);
+    }
+}
+
+// Make them available in global scope for testing
+global.Product = Product;
+global.ShoppingCart = ShoppingCart;
+
+module.exports = { Product, ShoppingCart };
