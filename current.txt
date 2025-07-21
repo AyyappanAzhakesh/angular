@@ -1,26 +1,30 @@
-class Product {
-    constructor(name, price) {
-        this.name = name;
-        this.price = price;
-    }
-}
-
-class ShoppingCart {
+class Inventory {
     constructor() {
-        this.items = [];
+        this.products = new Map();
     }
 
-    addItem(product) {
-        this.items.push(product);
+    addProduct(name, quantity) {
+        const currentQuantity = this.products.get(name) || 0;
+        this.products.set(name, currentQuantity + quantity);
     }
 
-    calculateTotalPrice() {
-        return this.items.reduce((total, item) => total + item.price, 0);
+    updateProduct(name, quantity) {
+        if (!this.products.has(name)) {
+            throw new Error('Product not found');
+        }
+        this.products.set(name, quantity);
+    }
+
+    removeProduct(name) {
+        if (!this.products.has(name)) {
+            throw new Error('Product not found');
+        }
+        this.products.delete(name);
+    }
+
+    getProduct(name) {
+        return this.products.has(name) ? this.products.get(name) : null;
     }
 }
 
-// Make them available in global scope for testing
-global.Product = Product;
-global.ShoppingCart = ShoppingCart;
-
-module.exports = { Product, ShoppingCart };
+module.exports = Inventory;
