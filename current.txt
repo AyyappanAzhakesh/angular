@@ -1,41 +1,37 @@
-class TaskService {
+class QuoteManager {
   constructor() {
-    this.tasks = [];
+    this.quotes = [];
     this.nextId = 1;
   }
 
-  addTask(title, description) {
-    const task = {
+  addQuote(text, author) {
+    const quote = {
       id: this.nextId++,
-      title,
-      description,
-      completed: false
+      text,
+      author
     };
-    this.tasks.push(task);
-    return task;
+    this.quotes.push(quote);
+    return quote;
   }
 
-  updateTask(id, title, description, completed) {
-    const task = this.tasks.find(t => t.id === id);
-    if (!task) return null;
-
-    task.title = title;
-    task.description = description;
-    task.completed = completed;
-    return task;
+  updateQuote(id, newText, newAuthor) {
+    const quote = this.quotes.find(q => q.id === id);
+    if (!quote) return null;
+    quote.text = newText;
+    quote.author = newAuthor;
+    return quote;
   }
 
-  deleteTask(id) {
-    const index = this.tasks.findIndex(t => t.id === id);
+  deleteQuote(id) {
+    const index = this.quotes.findIndex(q => q.id === id);
     if (index === -1) return false;
-
-    this.tasks.splice(index, 1);
+    this.quotes.splice(index, 1);
     return true;
   }
 
-  listTasks() {
-    return this.tasks;
+  listQuotes() {
+    return this.quotes;
   }
 }
 
-module.exports = new TaskService();
+module.exports = QuoteManager;
