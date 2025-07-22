@@ -1,59 +1,63 @@
-const fs = require('fs');
-const path = require('path');
-const util = require('util');
+const http = require('http');
+const url = require('url');
 
-const readFileAsync = util.promisify(fs.readFile);
-const writeFileAsync = util.promisify(fs.writeFile);
+class ShoppingList {
+  constructor() {
+    this.groceries = [];
+    this.totalPrice = 0;
+    this.handleRequest = this.handleRequest.bind(this);
+  }
 
-const inputFilePath = path.join(__dirname, 'data', 'input.txt');
-const outputFilePath = path.join(__dirname, 'data', 'output.json');
+  addItem(name, price) {
+    this.groceries.push({ name, price });
+    this.calculateTotalPrice();
+  }
 
-/**
- * Reads input text file asynchronously
- * @returns {Promise<string>}
- */
-async function readInputFile() {
-  try {
-    const content = await readFileAsync(inputFilePath, 'utf8');
-    return content;
-  } catch (error) {
-    throw new Error(`Error reading input file: ${error.message}`);
+  calculateTotalPrice() {
+    this.totalPrice = this.groceries.reduce((total, item) => total + item.price, 0);
+  }
+
+  handleRequest(req, res) {
+    const { pathname } = url.parse(req.url, true);
+
+    if (req.method === 'POST' && pathname === '/add-item') {
+      let body = '';
+      req.on('data', (chunk) => {
+        body += chunk.toString();
+      }).on('end', () => {
+        try {
+          const { name, price } = JSON.parse(body);
+          if (
+            typeof name !== 'string' ||
+            typeof price !== 'number' ||
+            price < 0
+          ) {
+            res.writeHead(400, { 'Content-Type': 'text/plain' });
+            return res.end('Invalid input data');
+          }
+
+          this.addItem(name, price);
+
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ groceries: this.groceries, totalPrice: this.totalPrice }));
+        } catch (err) {
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ message: 'Invalid json format' }));
+        }
+      });
+    } else {
+      res.writeHead(404, { 'Content-Type': 'text/plain' });
+      res.end('Not Found');
+    }
   }
 }
 
-/**
- * Counts words in a given text, removing punctuation and ignoring case
- * @param {string} text
- * @returns {Object}
- */
-function countWords(text) {
-  const words = text
-    .toLowerCase()
-    .match(/\b\w+\b/g); // Matches words only, ignoring punctuation
+const shoppingList = new ShoppingList();
 
-  if (!words) return {};
+const server = http.createServer((req, res) => shoppingList.handleRequest(req, res));
 
-  return words.reduce((acc, word) => {
-    acc[word] = (acc[word] || 0) + 1;
-    return acc;
-  }, {});
-}
+server.listen(8080, () => {
+  console.log(`Server running at port: 8080`);
+});
 
-/**
- * Saves the word count result as JSON to output file
- * @param {Object} wordCount
- * @returns {Promise<void>}
- */
-async function saveWordCount(wordCount) {
-  try {
-    await writeFileAsync(outputFilePath, JSON.stringify(wordCount, null, 2), 'utf8');
-  } catch (error) {
-    throw new Error(`Error writing output file: ${error.message}`);
-  }
-}
-
-module.exports = {
-  readInputFile,
-  countWords,
-  saveWordCount
-};
+module.exports = shoppingList;
