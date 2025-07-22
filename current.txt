@@ -1,32 +1,59 @@
-class Destination {
-  constructor(name, cost) {
-    this.name = name;
-    this.cost = cost;
+const fs = require('fs');
+const path = require('path');
+const util = require('util');
+
+const readFileAsync = util.promisify(fs.readFile);
+const writeFileAsync = util.promisify(fs.writeFile);
+
+const inputFilePath = path.join(__dirname, 'data', 'input.txt');
+const outputFilePath = path.join(__dirname, 'data', 'output.json');
+
+/**
+ * Reads input text file asynchronously
+ * @returns {Promise<string>}
+ */
+async function readInputFile() {
+  try {
+    const content = await readFileAsync(inputFilePath, 'utf8');
+    return content;
+  } catch (error) {
+    throw new Error(`Error reading input file: ${error.message}`);
   }
 }
 
-class TravelPlan {
-  constructor() {
-    this.destinations = [];
-  }
+/**
+ * Counts words in a given text, removing punctuation and ignoring case
+ * @param {string} text
+ * @returns {Object}
+ */
+function countWords(text) {
+  const words = text
+    .toLowerCase()
+    .match(/\b\w+\b/g); // Matches words only, ignoring punctuation
 
-  addDestination(destination) {
-    this.destinations.push(destination);
-  }
+  if (!words) return {};
 
-  calculateTotalCost() {
-    return this.destinations.reduce((total, dest) => total + dest.cost, 0);
-  }
+  return words.reduce((acc, word) => {
+    acc[word] = (acc[word] || 0) + 1;
+    return acc;
+  }, {});
+}
 
-  printPlan() {
-    console.log("Travel Plan:");
-    this.destinations.forEach(dest => {
-      console.log(`${dest.name} - $${dest.cost.toFixed(2)}`);
-    });
+/**
+ * Saves the word count result as JSON to output file
+ * @param {Object} wordCount
+ * @returns {Promise<void>}
+ */
+async function saveWordCount(wordCount) {
+  try {
+    await writeFileAsync(outputFilePath, JSON.stringify(wordCount, null, 2), 'utf8');
+  } catch (error) {
+    throw new Error(`Error writing output file: ${error.message}`);
   }
 }
 
 module.exports = {
-  Destination,
-  TravelPlan
+  readInputFile,
+  countWords,
+  saveWordCount
 };
