@@ -1,37 +1,36 @@
-class QuoteManager {
-  constructor() {
-    this.quotes = [];
-    this.nextId = 1;
-  }
-
-  addQuote(text, author) {
-    const quote = {
-      id: this.nextId++,
-      text,
-      author
-    };
-    this.quotes.push(quote);
-    return quote;
-  }
-
-  updateQuote(id, newText, newAuthor) {
-    const quote = this.quotes.find(q => q.id === id);
-    if (!quote) return null;
-    quote.text = newText;
-    quote.author = newAuthor;
-    return quote;
-  }
-
-  deleteQuote(id) {
-    const index = this.quotes.findIndex(q => q.id === id);
-    if (index === -1) return false;
-    this.quotes.splice(index, 1);
-    return true;
-  }
-
-  listQuotes() {
-    return this.quotes;
+class Destination {
+  constructor(name, cost) {
+    this.name = name;
+    this.cost = cost;
   }
 }
 
-module.exports = QuoteManager;
+class TravelPlan {
+  constructor() {
+    this.destinations = [];
+  }
+
+  addDestination(destination) {
+    this.destinations.push(destination);
+  }
+
+  calculateTotalCost() {
+    return this.destinations.reduce((total, destination) => total + destination.cost, 0);
+  }
+
+  printPlan() {
+    console.log("Travel Plan:");
+    this.destinations.forEach(destination => {
+      console.log(`${destination.name} - $${destination.cost.toFixed(2)}`);
+    });
+  }
+}
+
+// Attach classes to global for compatibility with the test file
+global.Destination = Destination;
+global.TravelPlan = TravelPlan;
+
+module.exports = {
+  Destination,
+  TravelPlan
+};
