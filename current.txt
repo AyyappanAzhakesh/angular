@@ -1,59 +1,28 @@
-const http = require('http');
-const url = require('url');
-
-class EventManager {
+class ShoppingList {
   constructor() {
-    this.events = [];
-    this.handleRequest = this.handleRequest.bind(this);
+    this.items = [];
   }
 
-  addEvent(name, dateStr) {
-    const event = { name, date: dateStr };
-    this.events.push(event);
-    return event;
+  addItem(name, quantity) {
+    this.items.push({ name, quantity });
   }
 
-  listEvents() {
-    return this.events;
-  }
-
-  handleRequest(req, res) {
-    const { pathname } = url.parse(req.url, true);
-
-    if (req.method === 'POST' && pathname === '/add-event') {
-      let body = '';
-      req.on('data', chunk => {
-        body += chunk.toString();
-      }).on('end', () => {
-        try {
-          const { name, date } = JSON.parse(body);
-
-          // Basic validation
-          if (
-            typeof name !== 'string' ||
-            typeof date !== 'string' ||
-            isNaN(Date.parse(date))
-          ) {
-            res.writeHead(400, { 'Content-Type': 'text/plain' });
-            return res.end('Invalid input data');
-          }
-
-          const event = this.addEvent(name, date);
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify(event));
-        } catch (error) {
-          res.writeHead(400, { 'Content-Type': 'text/plain' });
-          res.end('Invalid input data');
-        }
-      });
-    } else if (req.method === 'GET' && pathname === '/events') {
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(this.listEvents()));
-    } else {
-      res.writeHead(404, { 'Content-Type': 'text/plain' });
-      res.end('Not Found');
+  updateItem(name, quantity) {
+    const item = this.items.find(i => i.name === name);
+    if (item) {
+      item.quantity = quantity;
     }
+    // silently ignore if item not found (as expected by tests)
+  }
+
+  deleteItem(name) {
+    this.items = this.items.filter(i => i.name !== name);
+    // safely handles missing item (as expected)
+  }
+
+  getList() {
+    return this.items;
   }
 }
 
-module.exports = new EventManager();
+module.exports = new ShoppingList();
