@@ -1,86 +1,54 @@
 const http = require('http');
 const url = require('url');
 
-// ------------------ TravelPlan Module ------------------
-
-class Destination {
-  constructor(name, cost) {
-    this.name = name;
-    this.cost = cost;
-  }
-}
-
-class TravelPlan {
+class EventManager {
   constructor() {
-    this.destinations = [];
-  }
-
-  addDestination(destination) {
-    this.destinations.push(destination);
-  }
-
-  calculateTotalCost() {
-    return this.destinations.reduce((total, dest) => total + dest.cost, 0);
-  }
-
-  printPlan() {
-    console.log("Travel Plan:");
-    this.destinations.forEach(dest => {
-      console.log(`${dest.name} - $${dest.cost.toFixed(2)}`);
-    });
-  }
-}
-
-// Make classes available globally for test file
-global.Destination = Destination;
-global.TravelPlan = TravelPlan;
-
-// ------------------ ShoppingList Module ------------------
-
-class ShoppingList {
-  constructor() {
-    this.groceries = [];
-    this.totalPrice = 0;
+    this.events = [];
     this.handleRequest = this.handleRequest.bind(this);
   }
 
-  addItem(name, price) {
-    this.groceries.push({ name, price });
-    this.calculateTotalPrice();
+  addEvent(name, dateStr) {
+    const event = { name, date: dateStr };
+    this.events.push(event);
+    return event;
   }
 
-  calculateTotalPrice() {
-    this.totalPrice = this.groceries.reduce((total, item) => total + item.price, 0);
+  listEvents() {
+    return this.events;
   }
 
   handleRequest(req, res) {
     const { pathname } = url.parse(req.url, true);
 
-    if (req.method === 'POST' && pathname === '/add-item') {
+    if (req.method === 'POST' && pathname === '/add-event') {
       let body = '';
-      req.on('data', (chunk) => {
+      req.on('data', chunk => {
         body += chunk.toString();
       }).on('end', () => {
         try {
-          const { name, price } = JSON.parse(body);
+          const { name, date } = JSON.parse(body);
+
+          // Basic validation
           if (
             typeof name !== 'string' ||
-            typeof price !== 'number' ||
-            price < 0
+            typeof date !== 'string' ||
+            isNaN(Date.parse(date))
           ) {
             res.writeHead(400, { 'Content-Type': 'text/plain' });
             return res.end('Invalid input data');
           }
 
-          this.addItem(name, price);
-
+          const event = this.addEvent(name, date);
           res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ groceries: this.groceries, totalPrice: this.totalPrice }));
-        } catch (err) {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ message: 'Invalid json format' }));
+          res.end(JSON.stringify(event));
+        } catch (error) {
+          res.writeHead(400, { 'Content-Type': 'text/plain' });
+          res.end('Invalid input data');
         }
       });
+    } else if (req.method === 'GET' && pathname === '/events') {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(this.listEvents()));
     } else {
       res.writeHead(404, { 'Content-Type': 'text/plain' });
       res.end('Not Found');
@@ -88,13 +56,4 @@ class ShoppingList {
   }
 }
 
-const shoppingList = new ShoppingList();
-
-const server = http.createServer((req, res) => shoppingList.handleRequest(req, res));
-
-server.listen(8080, () => {
-  console.log(`Server running at port: 8080`);
-});
-
-// Export instance for server tests
-module.exports = shoppingList;
+module.exports = new EventManager();
