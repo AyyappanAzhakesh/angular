@@ -1,6 +1,42 @@
 const http = require('http');
 const url = require('url');
 
+// ------------------ TravelPlan Module ------------------
+
+class Destination {
+  constructor(name, cost) {
+    this.name = name;
+    this.cost = cost;
+  }
+}
+
+class TravelPlan {
+  constructor() {
+    this.destinations = [];
+  }
+
+  addDestination(destination) {
+    this.destinations.push(destination);
+  }
+
+  calculateTotalCost() {
+    return this.destinations.reduce((total, dest) => total + dest.cost, 0);
+  }
+
+  printPlan() {
+    console.log("Travel Plan:");
+    this.destinations.forEach(dest => {
+      console.log(`${dest.name} - $${dest.cost.toFixed(2)}`);
+    });
+  }
+}
+
+// Make classes available globally for test file
+global.Destination = Destination;
+global.TravelPlan = TravelPlan;
+
+// ------------------ ShoppingList Module ------------------
+
 class ShoppingList {
   constructor() {
     this.groceries = [];
@@ -60,4 +96,5 @@ server.listen(8080, () => {
   console.log(`Server running at port: 8080`);
 });
 
+// Export instance for server tests
 module.exports = shoppingList;
