@@ -1,60 +1,41 @@
-const http = require('http');
-const url = require('url');
-
-class ChatApp {
+class TaskService {
   constructor() {
-    this.messages = [];
-    this.handleRequest = this.handleRequest.bind(this);
+    this.tasks = [];
+    this.nextId = 1;
   }
 
-  sendMessage(username, message) {
-    const msg = { username, message };
-    this.messages.push(msg);
-    return msg;
+  addTask(title, description) {
+    const task = {
+      id: this.nextId++,
+      title,
+      description,
+      completed: false
+    };
+    this.tasks.push(task);
+    return task;
   }
 
-  listMessages() {
-    return this.messages;
+  updateTask(id, title, description, completed) {
+    const task = this.tasks.find(t => t.id === id);
+    if (!task) return null;
+
+    task.title = title;
+    task.description = description;
+    task.completed = completed;
+    return task;
   }
 
-  handleRequest(req, res) {
-    const { pathname } = url.parse(req.url, true);
+  deleteTask(id) {
+    const index = this.tasks.findIndex(t => t.id === id);
+    if (index === -1) return false;
 
-    if (req.method === 'POST' && pathname === '/send-message') {
-      let body = '';
-      req.on('data', chunk => {
-        body += chunk.toString();
-      }).on('end', () => {
-        try {
-          const { username, message } = JSON.parse(body);
+    this.tasks.splice(index, 1);
+    return true;
+  }
 
-          // Validation
-          if (
-            typeof username !== 'string' ||
-            typeof message !== 'string' ||
-            !username.trim() ||
-            !message.trim()
-          ) {
-            res.writeHead(400, { 'Content-Type': 'text/plain' });
-            return res.end('Invalid input data');
-          }
-
-          const msg = this.sendMessage(username, message);
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify(msg));
-        } catch (err) {
-          res.writeHead(400, { 'Content-Type': 'text/plain' });
-          res.end('Invalid input data');
-        }
-      });
-    } else if (req.method === 'GET' && pathname === '/messages') {
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify(this.listMessages()));
-    } else {
-      res.writeHead(404, { 'Content-Type': 'text/plain' });
-      res.end('Not Found');
-    }
+  listTasks() {
+    return this.tasks;
   }
 }
 
-module.exports = new ChatApp();
+module.exports = new TaskService();
