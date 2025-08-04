@@ -1,36 +1,1133 @@
-class Destination {
-  constructor(name, cost) {
-    this.name = name;
-    this.cost = cost;
-  }
+1st incre
+
+create folders
+
+admin-dashboard.html
+admin-dashboard.js
+forgot-password.html
+forgot-password.js
+index.html
+login.html
+login.js
+orders.html
+register.html
+register.js
+script.js
+user-dashboard.html
+user-dashboard.js
+
+
+#######################################################3
+admin-dashboard.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.rtl.min.css">
+
+</head>
+<body>
+
+	<!--Write your code here -->
+    <header class="container-fluid row">
+    <h1 class="text-center col-10 justify-content-end align-items-center h3">Admin Dashboard - Plant List</h1>
+    <div class="col-2 justify-content-end align-items-center">
+        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+    </div>
+</div>
+    <div class="container text-center">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="bg-success text-light">Plant ID</th>
+                    <th class="bg-success text-light">Plant Name</th>
+                    <th class="bg-success text-light">Category</th>
+                    <th class="bg-success text-light">Price</th>
+                    <th class="bg-success text-light">Stock</th>
+                    <th class="bg-success text-light">Action</th>
+                </tr>
+            </thead>
+            <tbody id="plantTableBody">
+            </tbody>
+        </table>
+        <!-- modal -->
+        <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                   
+                    <div class="modal-body">
+                        Are you sure you want to logout?
+                    </div>
+                    <div class="modal-footer">
+                        <a href="login.html"><button class="btn btn-danger me-2">Yes, Logout</button></a>
+                        <a href="admin-dashboard.html"><button class="btn btn-success ms-2">Cancel</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="showModal" tabindex="-1" aria-labelledby="showModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            
+            <div class="modal-content" id="modalContent">
+                
+            </div>
+        </div>
+    </div>
+    <p style="display:none;">Description</p>
+    <script src="admin-dashboard.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+admin-dashboard.js
+const plantList = [
+    { id: 1, name: "Rose", category: "Flowering", price: 10, stock: "Available", image: "images/rose.jpg", description: "Beautiful red rose." },
+    { id: 2, name: "Tulsi", category: "Herbal", price: 8, stock: "Available", image: "images/tulsi.jpg", description: "Holy basil, used in Ayurveda." },
+    { id: 3, name: "Cactus", category: "Succulent", price: 12, stock: "Out of Stock", image: "images/cactus.jpg", description: "Drought-resistant plant." },
+    { id: 4, name: "Orchid", category: "Ornamental", price: 15, stock: "Available", image: "images/orchid.jpg", description: "Elegant and exotic flowers." },
+    { id: 5, name: "Money Plant", category: "Indoor", price: 9, stock: "Available", image: "images/moneyplant.jpg", description: "Brings good luck and prosperity." },
+    { id: 6, name: "Sunflower", category: "Flowering", price: 7, stock: "Available", image: "images/sunflower.jpg", description: "Bright yellow flowers that follow the sun." },
+    { id: 7, name: "Tulip", category: "Flowering", price: 14, stock: "Out of Stock", image: "images/tulip.jpg", description: "Spring blooming flowers with vibrant colors." },
+    { id: 8, name: "Jasmine", category: "Fragrant", price: 11, stock: "Available", image: "images/jasmine.jpg", description: "Sweet-smelling white flowers." },
+    { id: 9, name: "Aloe Vera", category: "Medicinal", price: 10, stock: "Available", image: "images/aloevera.jpg", description: "Used for skin and health benefits." }
+];
+
+const tablebody = document.querySelector("table tbody");
+
+plantList.forEach(plant => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+        <td>${plant.id}</td>
+        <td>${plant.name}</td>
+        <td>${plant.category}</td>
+        <td>$${plant.price}</td>
+        <td>${plant.stock}</td>
+        <td>
+            <button class="btn btn-success btn-sm" onclick="showMore(${plant.id})">Show More</button>
+        </td>
+    `;
+    tablebody.appendChild(row);
+});
+
+function showMore(plantId) {
+    const plant = plantList.find(p => p.id === plantId);
+    const modalContent = document.getElementById("modalContent");
+    modalContent.innerHTML = `
+        <div class="modal-header">
+            <h5 class="modal-title">${plant.name} Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+            <img src="${plant.image}" width="120" height="120" class="mb-3" onerror="this.src='images/default.jpg'" />
+            <p><strong>Category:</strong> ${plant.category}</p>
+            <p><strong>Price:</strong> $${plant.price}</p>
+            <p><strong>Stock:</strong> ${plant.stock}</p>
+            <p><strong>Description:</strong> ${plant.description}</p>
+        </div>
+    `;
+    const modal = new bootstrap.Modal(document.getElementById("showModal"));
+    modal.show();
 }
 
-class TravelPlan {
-  constructor() {
-    this.destinations = [];
-  }
 
-  addDestination(destination) {
-    this.destinations.push(destination);
-  }
+forgot-password.html
+<!DOCTYPE html>
+<html lang="en">
 
-  calculateTotalCost() {
-    return this.destinations.reduce((total, destination) => total + destination.cost, 0);
-  }
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Online Nursery</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.rtl.min.css">
+  <style>
+    .container-fluid{
+      height: 100vh;
+      background-image: url('./images/nursery-bg.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+    @media (min-width:768px),(max-width:1023px){
+      .login-form{
+        width: 100%;
+        
+      }
+    }
+    @media screen and (max-width:767px){
+      .login-form{
+        width: 100%;
+        font-size: 12px;
+      }
+      .register-right-content{
+        display: none;
+      }
+      .register-container{
+        display: flex;
+        justify-content: center;
+        width: 100%;
+      }
+    }
+    @media (min-width:768px) and (max-width:1023){
+      .login-form{
+        font-size: 12px;
+      }
+    }
+    @media (min-width:1024px){
+      .login-form{
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+<!--Write your code here -->
+  <div class="container-fluid d-flex justify-content-center align-items-center">
+    <div class="register-container w-50 bg-white p-2 d-flex flex-row justify-content-between shadow-lg rounded">
+        
+      <div class="login-form register-left-content d-flex flex-column shadow-lg p-2 rounded">
 
-  printPlan() {
-    console.log("Travel Plan:");
-    this.destinations.forEach(destination => {
-      console.log(`${destination.name} - $${destination.cost.toFixed(2)}`);
+        <div class="logo d-flex flex-column justify-content-center align-items-center w-100 h-100">
+          <img src="./images/logo.png" alt="" class="w-25 h-50">
+          <h1 class="h6">Forgot Password</h1>
+          <small>Enter your email to reset your password</small>
+        </div>
+        <form class="d-flex flex-column w-100 mt-2">
+
+          <div class="form-group w-100">
+            
+            <label for="email" class="form-label">Email</label>
+            <div class="input-group">
+              <input type="email"id="emailInput" class="form-control" placeholder="example@gmail.com">
+              <span><button id="verifyBtn" class="btn btn-success">Verify</button></span>
+            </div>
+          </div>
+
+
+        <div class="form-group mt-2">
+          <label for="password"  class="form-label">New Password</label>
+          <input type="text" id="newPassword" class="form-control" placeholder="Enter your password">
+        </div>
+
+        <div class="form-group mt-2">
+          <label for="Cpassword" class="form-label">Confirm New Password</label>
+          <input type="text" id="confirmPassword" class="form-control" placeholder="Re-Enter your password">
+        </div>
+
+        <div class="form-group mt-3">
+          <button id="resetBtn" class="btn btn-success w-100">Reset Password</button>
+        </div>
+      </form>
+      <small class="d-flex justify-content-center">Remember your Password? <a href="login.html">Login</a></small>
+    </div>
+    <div class="register-right-content w-100">
+      <img src="./images/forgotpassword.png" class="w-100 h-100 ms-3">
+    </div>
+   
+  </div>
+  </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+<script src="forgotpassword.js"></script>
+
+  
+</body>
+</html>
+
+
+forgot-password.js
+document.addEventListener('DOMContentLoaded', () => {
+    const verifyBtn = document.getElementById('verifyBtn');
+    const resetBtn = document.getElementById('resetBtn');
+  
+    let emailVerified = false;
+  
+    verifyBtn.addEventListener('click', () => {
+      const email = document.getElementById('emailInput').value.trim();
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+  
+      const userExists = users.find(user => user.email === email);
+      if (!userExists) {
+        alert("Email not found!");
+        emailVerified = false;
+      } else {
+        alert("Email verified. You can now reset your password.");
+        emailVerified = true;
+      }
     });
-  }
+  
+    resetBtn.addEventListener('click', () => {
+      const email = document.getElementById('emailInput').value.trim();
+      const newPassword = document.getElementById('newPassword').value.trim();
+      const confirmPassword = document.getElementById('confirmPassword').value.trim();
+  
+      if (!emailVerified) {
+        alert("Please verify your email first.");
+        return;
+      }
+  
+      if (newPassword === "" || confirmPassword === "") {
+        alert("Password fields cannot be empty.");
+        return;
+      }
+  
+      if (newPassword !== confirmPassword) {
+        alert("Passwords do not match!");
+        return;
+      }
+  
+      let users = JSON.parse(localStorage.getItem('users')) || [];
+      users = users.map(user => {
+        if (user.email === email) {
+          return { ...user, password: newPassword };
+        }
+        return user;
+      });
+  
+      localStorage.setItem('users', JSON.stringify(users));
+      alert("Password reset successful!");
+      window.location.href = "login.html";
+    });
+  });
+
+
+index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Online Nursery</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body,html{
+            height: 100%;
+            margin: 0;
+        }
+        .bg-cover{
+            background-image: url(images/nursery-bg.jpg);
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .custom-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+	<!-- <a href="register.html">register</a>
+    <a href="login.html">login</a>
+    <a href="user-dashboard.html">User Dashboard</a>
+    <a href="admin-dashboard.html">Admin Dashboard</a>
+    <a href="forgot-password.html">Forgot Password</a>
+     -->
+
+    <div class="bg-cover">
+        <div class="custom-card">
+            <h3 class="fw-bold">Welcome to Online Nursery</h3>
+            <p class="text-muted">Your best place to buy plants!</p>
+            <a href="login.html" class="btn btn-success">Login</a>
+        </div>
+    </div>
+</body>
+</html>
+ORDER.HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <style>
+        body{
+            background-color: #c8e6c9;
+            font-family: sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        table{
+            margin: auto;
+            background: white;
+            width: 50%;
+        }
+        th,td{
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+
+        }
+        .delete-btn{
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>Your Orders</h2>
+
+    <table id="orders-table">
+        <thead>
+            <tr>
+                <th>Plant Name</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="order-body">
+
+            </tbody>
+        
+    </table>
+    <p id="total-price">Total Price: $0</p>
+    <button onclick="goBack()">Back to Shop</button>
+    <script src="script.js"></script>
+	
+</body>
+</html>
+
+
+login.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body{
+            background-image:url(images/nursery-bg.jpg);
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+        }
+        .white-box{
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            /* padding: 40px; */
+            width: 900px;
+            max-width: 1000px;
+            display: flex;
+            /* overflow: hidden; */
+            /* margin: ; */
+            /* margin-top: 20px;
+            margin-bottom: 5px; */
+        }
+        .left-img{
+            width: 50%;
+            /* object-fit:cover; */
+            height: auto;
+
+        }
+        .right-side{
+            width: 50%;
+            /* padding: 30px; */
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background-color: white;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+        
+        @media(max-width: 767px){
+            .login-form{
+                font-size: 14px;
+                padding: 20px;
+            }
+            .white-box{
+                flex-direction: column;
+                align-items: center;
+            }
+            .left-img{
+                display: none;
+            }
+            .form-box{
+                width: 100%;
+            
+            }
+            .form-box h5{
+                font-size: 20px;
+            }
+            .form-box input,
+            .form-box button{
+                font-size: 14px;
+                /* padding: 10px; */
+            }
+            .ima{
+                width: 50%;
+                height: 100%;
+                display: flex;
+
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="white-box container-fluid w-sm-100 row ">
+        
+        <div class="col-sm-6">
+            <img src="images/login.png" alt="Side Image" style="width: 100%; height: 100%;" class="left-img"/>
+        </div>
+    
+        <div class="right-side col-sm-6">
+            <div class="form-box login-form">
+           
+          
+            <div class="text-center mb-3">
+                <img src="images/logo.png" alt="Logo" width="60%" height="60"/>
+                <h5 class="mt-3">Login to Your Account</h3>
+                <p class="text-muted small">Welcome back! Enter your credentials.</p>
+            </div>
+
+            <form  class ="container" id="login-form-">
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        <input type="text" class="form-control" id="username" placeholder="Enter your username">
+                        </div>
+                        <small><span id="usernameError" style="color: red;"></span></small>
+                    </div>
+                
+
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input type="password" class="form-control" id="password" placeholder="Enter your password">
+                        </div>
+                        <small><span id="passwordError" style="color: red;"></span></small>
+                    </div>
+                
+
+                <div class="mb3-">
+                    <label for="form-label" id="select">Select Role</label>
+                    <select class="form-select" id="role">
+                        <option value="select">Select Role</option>
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
+                    </select>
+                    <small><span id="selectError" style="color: red;"></span></small>
+
+                </div>
+
+                <div class="d-flex justify-content-between align items-center mb-3">
+                    <button class="btn btn-success px-4">Login</button>
+                    <a href="forgot-password.html" class="small text-decoration-none">Forgot Password?</a>
+                </div>
+
+                <div class="text-center">
+                    <p class="small">Don't have an account? <a href="register.html">Create an account</a></p>
+                </div>
+
+
+            </form>
+            </div>
+
+        </div>
+
+    </div>
+    <script src="login.js"></script>
+    
+</body>
+</html>
+
+
+login.js
+document.getElementById('login-form-').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const selectedRole = document.getElementById('role').value;
+
+    let valid = true;
+
+    // Clear previous error messages
+    document.getElementById('usernameError').textContent = "";
+    document.getElementById('passwordError').textContent = "";
+    document.getElementById('selectError').textContent = "";
+
+    // Username validation
+    if (username === '') {
+        document.getElementById('usernameError').textContent = "Username is required!";
+        valid = false;
+    }
+
+    // Password validation
+    if (password === '') {
+        document.getElementById('passwordError').textContent = "Password is required!";
+        valid = false;
+    }
+
+    // Role validation
+    if (selectedRole === 'select') {
+        document.getElementById('selectError').textContent = "Please select a role!";
+        valid = false;
+    }
+
+    if (!valid) return;
+
+    // Retrieve user data from localStorage
+    const storedUser = localStorage.getItem(username);
+
+    if (!storedUser) {
+        alert("User not found. Please register first.");
+        return;
+    }
+
+    const userData = JSON.parse(storedUser);
+
+    // Check password
+    if (userData.password !== password) {
+        alert("Incorrect password!");
+        return;
+    }
+
+    // Check role match
+    if (userData.role.toLowerCase() !== selectedRole.toLowerCase()) {
+        alert(`Role mismatch! You registered as ${userData.role}.`);
+        return;
+    }
+
+    // Redirect based on role
+    if (userData.role.toLowerCase() === "admin") {
+        window.location.href = "admin-dashboard.html";
+    } else {
+        window.location.href = "user-dashboard.html";
+    }
+});
+
+
+orders.html
+
+
+
+register.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body{
+            background-image:url(images/nursery-bg.jpg);
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+        }
+        .white-box{
+            background-color: white;
+            border-radius: 10px;
+            width: 700px;
+            max-width: 900px;
+            
+        }
+        .left-img{
+            width: 50%;
+            height: auto;
+
+        }
+        .right-side{
+            width: 50%;
+           
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background-color: white;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            line-height:100%;
+        }
+       
+        
+        @media(max-width: 767px){
+            .login-form{
+                font-size: 14px;
+                padding: 20px;
+            }
+            .white-box{
+                flex-direction: column;
+                align-items: center;
+            }
+            .left-img{
+                display: none;
+            }
+            .form-box{
+                width: 100%;
+            
+            }
+            .form-box h5{
+                font-size: 16px;
+            }
+            .form-box input,
+            .form-box button{
+                font-size: 14px;
+                padding: 10px;
+            }
+            .ima{
+                width: 50%;
+                height: 100%;
+                display: flex;
+
+            }
+            input {
+                height: 10px !important;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="white-box container-fluid d-flex  w-sm-100 row-md-6  h-100 w-50">
+        
+        
+    
+        <div class="right-side container">
+            <div class="form-box login-form h-25">
+           
+          
+            <div class="text-center ">
+                <img src="images/logo.png" alt="Logo" class="w-25 h-25"/>
+                <h5>Create Account</h5>
+                <small class="text-muted small">Join us and start shopping for plants today!</small>
+            </div>
+
+            <form class="container h-25 " id="register-form">
+                <div >
+                    <label class="form-label">Username</label>
+                    <div class="input-group ">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        <input type="text" class="form-control" id="username" placeholder="Enter your username">
+                        </div>
+                        <span id="usernameError" style="color: red;"></span>
+                    
+                </div>
+
+                <div>
+                    <label class="form-label">Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control" id="email" placeholder="example@gmail.com">
+                        </div>
+                        <span id="emailError" style="color:red;"></span>
+                        <!-- <span id="emailError" style="color:red;"></span> -->
+                    
+                </div>
+
+                <div>
+                    <label class="form-label">Phone</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                        <input type="tel" class="form-control" id="phonenumber" placeholder="Enter your phone number">
+                        </div>
+                        <span id="phonenumberError" style="color:red;"></span>
+                    
+                </div>
+
+                
+
+                <div>
+                    <label class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input type="password" class="form-control" id="password" placeholder="Enter your password">
+                        </div>
+                        <span id="passwordError" style="color:red;"></span>
+                        <!-- <span id="passwordError" style="color:red;"></span> -->
+
+                
+                </div>
+
+                <div>
+                    <label for="form-label">Role</label>
+                    <div class="input-group">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="role" id="user" value="User">
+                        <label class="form-check-label" for="user">User</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="role" id="Admin" value="Admin">
+                        <label class="form-check-label" for="user">Admin</label>
+                        </div>
+                    </div>
+                </div>   
+
+                <div class="d-flex justify-content-between align items-center mb-3">
+                    <button type="submit" class="btn btn-success px-4">Register</button>
+                    <a href="forgot-password.html" class="small text-decoration-none">Forgot Password?</a>
+                </div>
+
+                <div class="text-center">
+                    <p class="small">Already have an account? <a href="login.html">Login</a></p>
+                </div>
+
+
+            </form>
+            </div>
+
+            
+
+        </div>
+        <div class="col-sm-6">
+            <img src="images/login.png" alt="Side Image" style="width: 100%; height: 100%;" class="left-img"/>
+        </div>
+
+    </div>
+    <script src="register.js"></script>
+    
+</body>
+</html>
+
+
+register.js
+document.getElementById('register-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Get input values
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phonenumber = document.getElementById('phonenumber').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const roleElement = document.querySelector('input[name="role"]:checked');
+
+    // Regex patterns
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@!%*?&])[A-Za-z\d@!%*?&]{8,}$/;
+    const phoneRegex = /^[6-9]\d{9}$/;
+
+    // Validation flags
+    let valid = true;
+
+    // Username validation
+    if (username === '') {
+        document.getElementById('usernameError').textContent = "Username is required!";
+        valid = false;
+    } else {
+        document.getElementById('usernameError').textContent = "";
+    }
+
+    // Email validation
+    if (email === '') {
+        document.getElementById('emailError').textContent = "Email is required!";
+        valid = false;
+    } else if (!emailRegex.test(email)) {
+        document.getElementById('emailError').textContent = "Invalid email format (e.g., example@gmail.com)";
+        valid = false;
+    } else {
+        document.getElementById('emailError').textContent = "";
+    }
+
+    // Phone number validation
+    if (phonenumber === '') {
+        document.getElementById('phonenumberError').textContent = "Phone number is required!";
+        valid = false;
+    } else if (!phoneRegex.test(phonenumber)) {
+        document.getElementById('phonenumberError').textContent = "Enter a valid 10-digit Indian phone number.";
+        valid = false;
+    } else {
+        document.getElementById('phonenumberError').textContent = "";
+    }
+
+    // Password validation
+    if (password === '') {
+        document.getElementById('passwordError').textContent = "Password is required!";
+        valid = false;
+    } else if (!passwordRegex.test(password)) {
+        document.getElementById('passwordError').textContent = "Password must be at least 8 characters long, include uppercase, lowercase, number, and special character.";
+        valid = false;
+    } else {
+        document.getElementById('passwordError').textContent = "";
+    }
+
+    // Role validation
+    if (!roleElement) {
+        alert("Please select a role (User or Admin).");
+        valid = false;
+    }
+
+    // If all validations pass
+    if (valid) {
+        const role = roleElement.value;
+
+        const userData = {
+            username,
+            email,
+            phonenumber,
+            password,
+            role
+        };
+
+        // Save user data in localStorage using username as key
+        localStorage.setItem(username, JSON.stringify(userData));
+
+        alert("Registration successful!");
+        window.location.href = "login.html";
+    }
+});
+
+
+script.js
+document.addEventListener('DOMContentLoaded', () => {
+    const tbody = document.getElementById("order-body");
+    const totalPriceEl = document.getElementById("total-price");
+
+    let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+    let total = 0;
+
+    function renderOrders() {
+        tbody.innerHTML = "";
+        total = 0;
+
+        if (cartItems.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3">Your cart is empty.</td></tr>`;
+            totalPriceEl.textContent = `Total Price: $0.00`;
+            return;
+        }
+
+        cartItems.forEach((plant, index) => {
+            total += plant.price;
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>
+                    <img src="${plant.image}" alt="${plant.name}" style="width:50px; height:50px; border-radius:5px; margin-right:10px;">
+                    ${plant.name}
+                </td>
+                <td>$${plant.price}</td>
+                <td><button class="delete-btn" data-index="${index}">Delete</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        totalPriceEl.textContent = `Total Price: $${total.toFixed(2)}`;
+    }
+
+    // Delete item
+    tbody.addEventListener("click", (e) => {
+        if (e.target.classList.contains("delete-btn")) {
+            const index = e.target.getAttribute("data-index");
+            cartItems.splice(index, 1);
+            localStorage.setItem("cartItems", JSON.stringify(cartItems));
+            renderOrders();
+        }
+    });
+
+    renderOrders();
+});
+
+// Back button
+function goBack() {
+    window.location.href = "user-dashboard.html";
 }
 
-// Attach classes to global for compatibility with the test file
-global.Destination = Destination;
-global.TravelPlan = TravelPlan;
 
-module.exports = {
-  Destination,
-  TravelPlan
-};
+user-dashboard.html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.rtl.min.css">
+    <style>
+        body {
+            background-image: linear-gradient(yellow, yellow, green, green);
+            background-repeat: no-repeat;
+            background-size: cover;
+            height: 100vh;
+
+        }
+
+        .plant-card {
+            padding: 5px;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            align-items: center;
+            width: 300px;
+            margin: 5px;
+        }
+
+        .plant-card:hover {
+            transition-duration: 1s;
+            transform: scale(1.2) translateY(10px) rotateZ(8deg);
+
+
+        }
+
+        img {
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="d-flex justify-content-around align-items-center">
+            <div></div>
+            <div></div>
+            <div class="heading d-flex flex-column justify-content-center align-items-center">
+                <h1 class="h5">Welcome, User</h1>
+                <small id="items">Cart items: 0</small>
+            </div>
+            <div class="d-flex flex-row gap-2">
+                <a href="orders.html"><button class="btn btn-success">Go to Orders</button></a>
+                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</button>
+            </div>
+        </div>
+        <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    
+                    <div class="modal-body">
+                        Are you sure you want to logout?
+                    </div>
+                    <div class="modal-footer">
+                        <a href="login.html"><button class="btn btn-danger me-2">Yes, Logout</button></a>
+                        <a href="user-dashboard.html"><button class="btn btn-success ms-2">Cancel</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="container text-center w-75 h-100">
+            <div class="row row-cols-sm-12 row-cols-md-6">
+                <div class="col-4 bg-light mt-3 plant-card" role="button">
+                    <img src="./images/rose.jpg" alt="">
+                    <div>
+                        <h6 class="plant-name">Rose Plant</h6>
+                        <p class="plant-price">Price: $10</p>
+                    </div>
+                </div>
+                <div class="col-4 bg-light mt-3 plant-card" role="button">
+                    <img src="./images/tulip.jpg" alt="">
+                    <h6 class="plant-name">Tulip Plant</h6>
+                    <p class="plant-price">Price: $12</p>
+                </div>
+                <div class="col-4 bg-light mt-3 plant-card" role="button">
+                    <img src="./images/aloevera.jpg" alt="">
+                    <h6 class="plant-name">Aloe Vera</h6>
+                    <p class="plant-price">Price: $8</p>
+                </div>
+            </div>
+            <div class="row row-cols-s-12 row-cols-md-6">
+                <div class="col-4 bg-light mt-3 plant-card" role="button">
+                    <img src="./images/cactus.jpg" alt="">
+                    <h6 class="plant-name">Cactus</h6>
+                    <p class="plant-price">Price: $15</p>
+                </div>
+                <div class="col-4 bg-light mt-3 plant-card" role="button">
+                    <img src="./images/moneyplant.jpg" alt="">
+                    <h6 class="plant-name">Money Plant</h6>
+                    <p class="plant-price">Price: $9</p>
+                </div>
+                <div class="col-4 bg-light mt-3 plant-card" role="button">
+                    <img src="./images/jasmine.jpg" alt="">
+                    <h6 class="plant-name">Jasmine Plant</h6>
+                    <p class="plant-price">Price: $14</p>
+                </div>
+            </div>
+            <div class="row row-cols-s-12 row-cols-md-6">
+                <div class="col-4 bg-light mt-3 plant-card" role="button">
+                    <img src="./images/lily.jpg" alt="">
+                    <h6 class="plant-name">Lily</h6>
+                    <p class="plant-price">Price: $11</p>
+                </div>
+                <div class="col-4 bg-light mt-3 plant-card role="button">
+                    <img src="./images/sunflower.jpg" alt="">
+                    <h6 class="plant-name">Sunflower</h6>
+                    <p class="plant-price">Price: $13</p>
+                </div>
+                <div class="col-4 bg-light mt-3 plant-card" role="button">
+                    <img src="./images/orchid.jpg" alt="">
+                    <h6 class="plant-name">Orchid</h6>
+                    <p class="plant-price">Price: $18</p>
+                </div>
+
+            </div>
+
+        </div>
+        <script src="user-dashboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
+
+
+user-dashboard.js
+document.addEventListener('DOMContentLoaded', () => {
+    let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+    let cartcount = cartItems.length;
+
+    function updateCartCount() {
+        document.getElementById('items').textContent = `Cart items: ${cartcount}`;
+    }
+
+    updateCartCount(); // Initial update
+
+    const plantCards = document.querySelectorAll('.plant-card');
+
+    plantCards.forEach(card => {
+        card.onclick = () => {
+            const name = card.querySelector('.plant-name').textContent;
+            const priceText = card.querySelector('.plant-price').textContent;
+            const price = parseFloat(priceText.replace(/[^0-9.]/g, ''));
+            const image = card.querySelector('img').getAttribute('src');
+
+            cartItems.push({ name, price, image });
+            cartcount = cartItems.length;
+
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+            updateCartCount();
+        };
+    });
+
+    // Logout modal logic
+    const confirmLogout = document.getElementById("confirmLogout");
+    const cancelLogout = document.getElementById("cancelLogout");
+
+    confirmLogout.addEventListener("click", () => {
+        localStorage.removeItem('cartItems');
+        cartItems = [];
+        cartcount = 0;
+        updateCartCount();
+        window.location.href = "login.html";
+    });
+
+    cancelLogout.addEventListener("click", () => {
+        const logoutModal = bootstrap.Modal.getInstance(document.getElementById("logoutModal"));
+        logoutModal.hide();
+    });
+});
+
